@@ -1,0 +1,33 @@
+#+TITLE: ii Install and Configuration of Spac(emacs)
+
+[[http://spacemacs.org/][Spacemacs]] with a number of [[https://www.gnu.org/software/emacs/][Emacs]] packages is at the center of our workflow.
+The goal is to help future users of this workflow to get setup with the least amount of frustration and feeling productive.
+
+> Spacemacs is a new way to experience Emacs -- a sophisticated and polished set-up focused on ergonomics, mnemonics and consistency.
+
+* Emacs
+
+Our config seems to work on 26.x releases of emacs, install as appropriate for your OS.
+You can follow the directions at the bottom of this document if you want to build from source.
+
+* site-local
+
+To save time we use a site-local folder, usually under ~/usr/local/share/emacs/site-lisp~ and keep that under version control.
+
+Depending on your machine and internet connection it may take some time to retrieve.
+Alternatively you can download a tarball here: LINK
+
+#+BEGIN_SRC shell
+  sudo git clone --depth 1 --recurse-submodules \
+      https://github.com/ii/site-lisp \
+      /usr/local/share/emacs/site-lisp
+  sudo emacs --batch -l /usr/local/share/emacs/site-lisp
+#+END_SRC
+
+
+
+* References
+
+- [[https://github.com/ii/spacemacs/tree/stable][Github: ii/spacemacs (stable)]] 
+- [[https://magit.vc/manual/forge/][Magit: Forge]] 
+- [[https://gitlab.ii.coop/ii/tooling/ob-tmate][ob-tmate]] 
