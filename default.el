@@ -159,6 +159,26 @@
     (spacemacs/init)
     (configuration-layer/stable-elpa-download-tarball)
     (configuration-layer/load)
+    (let*
+        (
+         (site-lisp (file-name-directory load-file-name))
+         (elpa-path (concat site-lisp "elpa/" (symbol-value 'emacs-version) "/develop/"))
+         )
+      ;; these are packages we install via spacemacs
+      ;; unsure why the paths are not already added
+      ;; (add-to-list 'load-path (concat elpa-path "async-20190503.656"))
+      ;; (add-to-list 'load-path (concat elpa-path "dash-20190424.1804"))
+      ;; (add-to-list 'load-path (concat elpa-path "togetherly-20170426.616"))
+      ;;;;(load (concat elpa-path "async-20190503.656/async.el"))
+      ;;;;(load (concat elpa-path "dash-20190424.1804/dash.el"))
+      ;;;;(load (concat elpa-path "togetherly-20170426.616/togetherly.el"))
+      ;; (require 'togetherly)
+      ;; These are shipped as part of ii-site-local and are only one file
+      ;; I moved these into our modification of the org layer
+      (load (concat site-lisp "ob-tmate/ob-tmate.el"))
+      (load (concat site-lisp "ob-async/ob-async.el"))
+      )
+
     (spacemacs-buffer/display-startup-note)
     (spacemacs/setup-startup-hook)
     (spacemacs|unless-dumping
