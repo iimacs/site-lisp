@@ -129,7 +129,21 @@ This function should only modify configuration layer settings."
                                       togetherly
                                       vimish-fold
                                       xclip
-                                      ;; osc52e
+                                      ;; for tmate and over ssh cut-and-paste
+                                      ;; https://gist.github.com/49eabc1978fe3d6dedb3ca5674a16ece.git
+                                      ;; sakura is waiting on vte
+                                      ;; https://bugs.launchpad.net/sakura/+bug/1769575
+                                      ;; I'm pretty sure the lib vte issue is stale
+                                      ;; https://bugzilla.gnome.org/show_bug.cgi?id=795774
+                                      ;; available in minitty since 2.6.1
+                                      ;; https://github.com/mintty/mintty/issues/258
+                                      ;; http://mintty.github.io/ (Default tty on Cygwin etc)
+                                      ;; I created a ticket to add support to vte
+                                      ;; https://gitlab.gnome.org/GNOME/vte/issues/125
+                                      ;; this would in turn enable support on many
+                                      ;; default linux/gnome terminals
+                                      ;; for now, you probably want to use xterm
+                                      (osc52e :location "/usr/local/share/emacs/site-lisp/osc52e.el")
                                       ;; for jupyter
                                       websocket
                                       ;; simple-httpd
