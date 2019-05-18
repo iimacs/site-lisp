@@ -4,12 +4,18 @@
 [submodule "spacemacs"]
 	path = spacemacs
 	url = https://github.com/ii/spacemacs
-# [submodule "forge"]
-# 	path = forge
-# 	url = https://github.com/ii/forge
+[submodule "forge"]
+	path = forge
+	url = https://github.com/ii/forge
 [submodule "ob-tmate"]
 	path = ob-tmate
 	url = https://github.com/ii/ob-tmate
-# [submodule "ob-async"]
-# 	path = ob-async
-# 	url = https://github.com/ii/ob-async
+[submodule "ob-async"]
+	path = ob-async
+	url = https://github.com/astahlman/ob-async
+[submodule "elpa-mirror"]
+	path = elpa-mirror
+	url = https://github.com/ii/elpa-mirror
+[submodule "quelpa/melpa"]
+	path = quelpa/melpa
+	url = https://github.com/melpa/melpa.git
