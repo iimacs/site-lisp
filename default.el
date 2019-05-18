@@ -177,6 +177,7 @@
       ;; I moved these into our modification of the org layer
       (load (concat site-lisp "ob-tmate/ob-tmate.el"))
       (load (concat site-lisp "ob-async/ob-async.el"))
+      (load (concat site-lisp "osc52e/osc52e.el"))
       )
 
     (spacemacs-buffer/display-startup-note)
