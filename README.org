@@ -19,7 +19,7 @@ Alternatively you can download a tarball here: LINK
 
 #+BEGIN_SRC shell
   sudo git clone --depth 1 --recurse-submodules \
-      https://github.com/ii/site-lisp \
+      https://github.com/iiorg/site-lisp \
       /usr/local/share/emacs/site-lisp
   sudo emacs --batch -l /usr/local/share/emacs/site-lisp
 #+END_SRC
