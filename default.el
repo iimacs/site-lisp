@@ -16,6 +16,8 @@
 ;; see `SPC h . dotspacemacs-gc-cons' for more info
 (setq debug-on-signal t)
 (defconst emacs-start-time (current-time))
+;;(make-directory (expand-file-name user-emacs-directory) t)
+(make-directory (expand-file-name (concat user-emacs-directory ".cache")) t)
 (setq gc-cons-threshold 402653184 gc-cons-percentage 0.6)
 (defvar spacemacs-start-directory
   (concat (file-name-directory load-file-name) "spacemacs/"))
