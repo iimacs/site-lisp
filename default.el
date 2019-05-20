@@ -17,7 +17,10 @@
 (setq debug-on-signal t)
 (defconst emacs-start-time (current-time))
 ;;(make-directory (expand-file-name user-emacs-directory) t)
-(make-directory (expand-file-name (concat user-emacs-directory ".cache")) t)
+(setq dot-emacs-cachedir (expand-file-name (concat user-emacs-directory ".cache")))
+(unless (file-directory-p dot-emacs-cachedir)
+  (make-directory dot-emacs-cachedir)
+  )
 (setq gc-cons-threshold 402653184 gc-cons-percentage 0.6)
 (defvar spacemacs-start-directory
   (concat (file-name-directory load-file-name) "spacemacs/"))
@@ -159,6 +162,7 @@
     (spacemacs/init)
     (configuration-layer/stable-elpa-download-tarball)
     (configuration-layer/load)
+    (spacemacs/load-yasnippet)
     (let*
         (
          (site-lisp (file-name-directory load-file-name))
@@ -178,7 +182,7 @@
       (load (concat site-lisp "ob-tmate/ob-tmate.el"))
       (load (concat site-lisp "ob-async/ob-async.el"))
       (load (concat site-lisp "osc52e/osc52e.el"))
-      (add-to-list 'yas-snippet-dirs (concat site-lisp "snippets"))
+      ;; (add-to-list 'yas-snippet-dirs (concat site-lisp "snippets"))
       )
     (yas--load-snippet-dirs)
     (spacemacs-buffer/display-startup-note)
@@ -187,6 +191,15 @@
       (global-font-lock-mode)
       (global-undo-tree-mode t)
       (winner-mode t))
+    (setq org-confirm-babel-evaluate nil)
+    (setq dotspacemacs-enable-server t)
+    ;; https://stackoverflow.com/questions/19806176/in-emacs-how-do-i-make-a-local-variable-safe-to-be-set-in-a-file-for-all-possibl
+    (put 'org-babel-tmate-default-window-name 'safe-local-variable #'stringp)
+    (put 'org-confirm-babel-evaluate 'safe-local-variable #'booleanp)
+    ;; (put 'org-confirm-babel-evaluate 'safe-local-variable (lambda (_) t))
+    (put 'org-use-property-inheritance 'safe-local-variable (lambda (_) t))
+    (put 'org-file-dir 'safe-local-variable (lambda (_) t))
+    (put 'eval 'safe-local-variable (lambda (_) t))
     (when (and dotspacemacs-enable-server (not (spacemacs-is-dumping-p)))
       (require 'server)
       (when dotspacemacs-server-socket-dir
