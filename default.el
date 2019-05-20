@@ -178,8 +178,9 @@
       (load (concat site-lisp "ob-tmate/ob-tmate.el"))
       (load (concat site-lisp "ob-async/ob-async.el"))
       (load (concat site-lisp "osc52e/osc52e.el"))
+      (add-to-list 'yas-snippet-dirs (concat site-lisp "snippets"))
       )
-
+    (yas--load-snippet-dirs)
     (spacemacs-buffer/display-startup-note)
     (spacemacs/setup-startup-hook)
     (spacemacs|unless-dumping
