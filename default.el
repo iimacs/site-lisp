@@ -182,7 +182,7 @@
       (load (concat site-lisp "ob-tmate/ob-tmate.el"))
       (load (concat site-lisp "ob-async/ob-async.el"))
       (load (concat site-lisp "osc52e/osc52e.el"))
-      ;; (add-to-list 'yas-snippet-dirs (concat site-lisp "snippets"))
+      (add-to-list 'yas-snippet-dirs (concat site-lisp "snippets"))
       )
     (yas--load-snippet-dirs)
     (spacemacs-buffer/display-startup-note)
@@ -194,6 +194,9 @@
     (setq org-confirm-babel-evaluate nil)
     (setq dotspacemacs-enable-server t)
     ;; https://stackoverflow.com/questions/19806176/in-emacs-how-do-i-make-a-local-variable-safe-to-be-set-in-a-file-for-all-possibl
+    (put 'org-babel-tmate-session-prefix 'safe-local-variable #'stringp)
+    (put 'github-username 'safe-local-variable #'stringp)
+    (put 'github-user 'safe-local-variable #'stringp)
     (put 'org-babel-tmate-default-window-name 'safe-local-variable #'stringp)
     (put 'org-confirm-babel-evaluate 'safe-local-variable #'booleanp)
     ;; (put 'org-confirm-babel-evaluate 'safe-local-variable (lambda (_) t))
