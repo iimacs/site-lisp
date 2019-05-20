@@ -176,7 +176,7 @@
       ;;;;(load (concat elpa-path "async-20190503.656/async.el"))
       ;;;;(load (concat elpa-path "dash-20190424.1804/dash.el"))
       ;;;;(load (concat elpa-path "togetherly-20170426.616/togetherly.el"))
-      ;; (require 'togetherly)
+      (require 'togetherly)
       ;; These are shipped as part of ii-site-local and are only one file
       ;; I moved these into our modification of the org layer
       (load (concat site-lisp "ob-tmate/ob-tmate.el"))
