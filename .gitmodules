@@ -15,7 +15,7 @@
 	url = https://github.com/astahlman/ob-async
 [submodule "elpa-mirror"]
 	path = elpa-mirror
-	url = https://github.com/ii/elpa-mirror
+	url = https://github.com/d12frosted/elpa-mirror
 [submodule "quelpa/melpa"]
 	path = quelpa/melpa
 	url = https://github.com/melpa/melpa.git

@@ -120,9 +120,10 @@ This function should only modify configuration layer settings."
                                       groovy-mode
                                       ;; jupyter
                                       ;; coped these into org layer
-                                      (org :location "/usr/local/share/emacs/site-lisp/org-9.2.2")
+                                      ;;(org :location "/usr/local/share/emacs/site-lisp/org-9.2.2")
                                       (ob-tmate :location "/usr/local/share/emacs/site-lisp/ob-tmate")
                                       (ob-async :location "/usr/local/share/emacs/site-lisp/ob-async")
+                                      (impatient-mode :location "/usr/local/share/emacs/site-lisp/impatient-mode")
                                       ob-go
                                       ob-tmux
                                       org-tree-slide
