@@ -72,6 +72,7 @@ This function should only modify configuration layer settings."
      syntax-checking
      docker
      (go :variables
+         godoc-at-point-function 'godoc-gogetdoc
          go-tab-width 4
          go-use-gometalinter t)
      html
@@ -114,7 +115,9 @@ This function should only modify configuration layer settings."
                                       fancy-narrow
                                       feature-mode
                                       ghub
+                                      go-playground
                                       go-dlv
+                                      gorepl-mode ;; go
                                       graphql
                                       graphql-mode
                                       groovy-mode
@@ -126,7 +129,11 @@ This function should only modify configuration layer settings."
                                       (impatient-mode :location "/usr/local/share/emacs/site-lisp/impatient-mode")
                                       ob-go
                                       ob-tmux
+                                      org-babel-eval-in-repl
                                       org-tree-slide
+                                      org-pdfview
+                                      pdf-tools ;; https://github.com/politza/pdf-tools
+                                      ;; pdf-view
                                       s
                                       scad-mode
                                       slime
@@ -547,6 +554,9 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  ;; our go stuff
+  (setq go-format-before-save t)
+  (setq gofmt-command "goimports")
   (setq quelpa-checkout-melpa-p nil)
   ;; would probably be nicer to have these somewhere later
   (let*
