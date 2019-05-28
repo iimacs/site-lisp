@@ -188,6 +188,14 @@
       (load (concat site-lisp "impatient-mode/impatient-mode.el"))
       (add-to-list 'yas-snippet-dirs (concat site-lisp "snippets"))
       )
+    ;; https://emacs.stackexchange.com/questions/20577/org-babel-load-all-languages-on-demand#20618
+    (defadvice org-babel-execute-src-block (around load-language nil activate)
+      "Load language if needed"
+      (let ((language (org-element-property :language (org-element-at-point))))
+        (unless (cdr (assoc (intern language) org-babel-load-languages))
+          (add-to-list 'org-babel-load-languages (cons (intern language) t))
+          (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))
+        ad-do-it))
     (yas--load-snippet-dirs)
     (spacemacs-buffer/display-startup-note)
     (spacemacs/setup-startup-hook)
