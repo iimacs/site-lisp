@@ -179,6 +179,7 @@
       ;;;;(load (concat elpa-path "async-20190503.656/async.el"))
       ;;;;(load (concat elpa-path "dash-20190424.1804/dash.el"))
       ;;;;(load (concat elpa-path "togetherly-20170426.616/togetherly.el"))
+      ;; (add-to-list 'load-path (concat elpa-path "org-plus-contrib-2019050"))
       (require 'togetherly)
       ;; These are shipped as part of ii-site-local and are only one file
       ;; I moved these into our modification of the org layer
@@ -186,6 +187,8 @@
       (load (concat site-lisp "ob-async/ob-async.el"))
       (load (concat site-lisp "osc52e/osc52e.el"))
       (load (concat site-lisp "impatient-mode/impatient-mode.el"))
+      ;; (add-to-list 'load-path (concat site-lisp "org-pdfview/"))
+      ;; (load (concat site-lisp "org-pdfview/org-pdfview.el"))
       (add-to-list 'yas-snippet-dirs (concat site-lisp "snippets"))
       )
     ;; https://emacs.stackexchange.com/questions/20577/org-babel-load-all-languages-on-demand#20618
@@ -221,7 +224,9 @@
         (setq server-socket-dir dotspacemacs-server-socket-dir))
       (unless (server-running-p)
         (message "Starting a server...")
-        (server-start)))
+        (server-start)
+        (require 'org-protocol)
+        ))
     (spacemacs|when-dumping-strict
       (setq load-path-backup load-path)
       ;; disable undo-tree to prevent from segfaulting when loading the dump

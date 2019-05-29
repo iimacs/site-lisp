@@ -25,3 +25,6 @@
 [submodule "impatient-mode"]
 	path = impatient-mode
 	url = https://github.com/tkita/impatient-mode.git
+[submodule "org-pdfview"]
+	path = org-pdfview
+	url = https://github.com/markus1189/org-pdfview.git
