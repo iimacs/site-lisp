@@ -779,24 +779,25 @@ before packages are loaded."
         smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 587
         smtpmail-debug-info t)
-  (setq mu4e-reply-to-address "hh@ii.coop"
-        user-mail-address "hh@ii.coop"
-        user-full-name  "Hippie Hacker")
-  (add-hook 'mu4e-compose-mode-hook
-            (defun my-do-compose-stuff ()
-              "My settings for message composition."
-              (set-fill-column 72)
-              (flyspell-mode)))
-  ;; activate debugging
-  (setq
-   mu4e-maildir (expand-file-name "~/Maildir")
-   ;; Use for testing
-   ;; mu4e-get-mail-command "true"
-   mu4e-get-mail-command "mbsync gmail"
-   mu4e-change-filenames-when-moving t
-   smtpmail-queue-mail nil
-   smtpmail-queue-dir "~/Maildir/queue/cur"
-   )
+  ;; Disable mu4e until we figure out a nice per user+box config
+  ;; (setq mu4e-reply-to-address "hh@ii.coop"
+  ;;       user-mail-address "hh@ii.coop"
+  ;;       user-full-name  "Hippie Hacker")
+  ;; (add-hook 'mu4e-compose-mode-hook
+  ;;           (defun my-do-compose-stuff ()
+  ;;             "My settings for message composition."
+  ;;             (set-fill-column 72)
+  ;;             (flyspell-mode)))
+  ;; ;; activate debugging
+  ;; (setq
+  ;;  mu4e-maildir (expand-file-name "~/Maildir")
+  ;;  ;; Use for testing
+  ;;  ;; mu4e-get-mail-command "true"
+  ;;  mu4e-get-mail-command "mbsync gmail"
+  ;;  mu4e-change-filenames-when-moving t
+  ;;  smtpmail-queue-mail nil
+  ;;  smtpmail-queue-dir "~/Maildir/queue/cur"
+  ;;  )
   (setq debug-on-error nil
         debug-on-signal nil
         debug-on-quit nil)
