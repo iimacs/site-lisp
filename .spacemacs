@@ -42,11 +42,12 @@ This function should only modify configuration layer settings."
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      (auto-completion :variables
+                      auto-completion-private-snippets-directory (expand-file-name "~/.emacs.d/snippets")
                       auto-completion-enable-sort-by-usage t
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t)
      better-defaults
-     ;; deft ;; https://jblevins.org/projects/deft/
+     deft ;; https://jblevins.org/projects/deft/
      emacs-lisp
      ;; epub
      ;; elfeed
@@ -54,6 +55,18 @@ This function should only modify configuration layer settings."
      helm
      ;; ietf
      markdown
+     (mu4e :variables
+           mu4e-enable-mode-line nil
+           mu4e-enable-notifications nil
+           mu4e-drafts-folder "/[Gmail].Drafts"
+           mu4e-sent-folder   "/[Gmail].Sent Mail"
+           mu4e-trash-folder  "/[Gmail].Bin"
+           mu4e-maildir-shortcuts
+           '( ("/INBOX"               . ?i)
+              ("/[Gmail].Sent Mail"   . ?s)
+              ("/[Gmail].Bin"       . ?t)
+              ("/[Gmail].All Mail"    . ?a))
+           )
      multiple-cursors
      neotree
      (org :variables
@@ -87,6 +100,16 @@ This function should only modify configuration layer settings."
      html
      javascript
      lua
+     (lsp :variables
+          lsp-navigation 'both
+          lsp-ui-doc-enable t
+          lsp-ui-remap-xref-keybindings nil
+          lsp-ui-doc-include-signature t
+          lsp-ui-sideline-enable t
+          lsp-ui-sideline-show-symbol t
+          lsp-prefer-flymake nil
+          lsp-print-io t
+          )
      nginx
      pandoc
      pdf
@@ -123,6 +146,8 @@ This function should only modify configuration layer settings."
                                       command-log-mode
                                       dash
                                       demo-it
+                                      ein ;; https://github.com/millejoh/emacs-ipython-notebook
+                                      emms
                                       emacsql-sqlite
                                       evil-vimish-fold
                                       fancy-narrow
@@ -140,6 +165,13 @@ This function should only modify configuration layer settings."
                                       (ob-tmate :location "/usr/local/share/emacs/site-lisp/ob-tmate")
                                       (ob-async :location "/usr/local/share/emacs/site-lisp/ob-async")
                                       (impatient-mode :location "/usr/local/share/emacs/site-lisp/impatient-mode")
+                                      ;; https://gitlab.com/oer/oer-reveal
+                                      oer-reveal
+                                      org-re-reveal-ref
+                                      (emacs-reveal :location (recipe
+                                                               :fetcher gitlab
+                                                               :repo "oer/emacs-reveal"
+                                                               :commit "d0aa1f9d"))
                                       ob-go
                                       ;; org-protocol ;; https://orgmode.org/worg/org-contrib/org-protocol.html
                                       ;; http://tech.memoryimprintstudio.com/org-capture-from-external-applications/
@@ -147,17 +179,25 @@ This function should only modify configuration layer settings."
                                       ob-tmux
                                       org-babel-eval-in-repl
                                       org-tree-slide
+                                      ;; org-mu4e
                                       org-pdfview
+                                      ox-reveal
                                       ;; pdf-tools ;; https://github.com/politza/pdf-tools
                                       ;; pdf-view
                                       s
                                       scad-mode
                                       slime
+                                      transcribe
                                       togetherly
                                       vimish-fold
                                       xclip
+                                      (yasnippet :location (recipe
+                                                            :fetcher github
+                                                            :repo "joaotavora/yasnippet"
+                                                            :commit "89eb7ab"))
+                                      ;;                      :branch "0.12.2"))
                                       ;; for tmate and over ssh cut-and-paste
-                                      ;; https://gist.github.com/49eabc1978fe3d6dedb3ca5674a16ece.git
+                                                 ;; https://gist.github.com/49eabc1978fe3d6dedb3ca5674a16ece.git
                                       ;; sakura is waiting on vte
                                       ;; https://bugs.launchpad.net/sakura/+bug/1769575
                                       ;; I'm pretty sure the lib vte issue is stale
@@ -571,12 +611,37 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; our org-capture-templates
-  (setq org-capture-templates '(
-                                ("p" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
-                                 "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-                                ("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
-                                 "* %? [[%:link][%:description]] \nCaptured On: %U")
-                                ))
+  ;; (setq org-capture-templates '(
+  ;;                               ("p" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+  ;;                                "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+  ;;                               ("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+  ;;                                "* %? [[%:link][%:description]] \nCaptured On: %U")
+  ;;                               ))
+  (setq deft-directory (expand-file-name "~/ii/org/"))
+  (setq deft-recursive t)
+  (setq deft-use-filename-as-title nil)
+  (setq browse-url-generic-program "chromium-browser")
+  (setq
+   org-capture-templates
+   (quote(
+          ("w" "Default template"
+           entry (file+headline "~/org/capture.org" "Notes")
+           "* %^{Title}\n\n  Source: %u, %c\n\n  %i"
+           :empty-lines 1)
+          ("t" "TODO"
+           entry (file+headline "~/org/TODO.org" "Inbox")
+           "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"
+           )
+          ("p" "Protocol"
+           entry (file+headline "~/ii/org/agenda/notes.org" "Inbox")
+           ;; "* [[%:link][%:description]] %^G\nSource: %u, %c\n #+BEGIN_QUOTE\n%initial\n#+END_QUOTE\n\n\n%?"
+           "* [[%:link][%:description]] %^G\nTime: %U\n #+BEGIN_QUOTE\n%:initial\n#+END_QUOTE\n\n\n%?"
+           )
+          ("L" "Protocol Link"
+           entry (file+headline "~/ii/org/agenda/notes.org" "Inbox")
+           "* %? [[%:link][%:description]] \nCaptured On: %U")
+          ;; ... more templates here ...
+          )))
   ;; our go stuff
   (setq go-format-before-save t)
   (setq gofmt-command "goimports")
@@ -604,6 +669,73 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
     ;; (require 'togetherly)
     )
   ;; this needs to be defined early
+  ;; from http://pragmaticemacs.com/emacs/email-templates-in-mu4e-with-yasnippet/
+  ;; function to return first name of email recipients
+  ;; used by yasnippet
+  ;; inspired by
+  ;;http://blog.binchen.org/posts/how-to-use-yasnippets-to-produce-email-templates-in-emacs.html
+  (defun bjm/mu4e-get-names-for-yasnippet ()
+    "Return comma separated string of names for an email"
+    (interactive)
+    (let ((email-name "") str email-string email-list email-name2 tmpname)
+      (save-excursion
+        (goto-char (point-min))
+        ;; first line in email could be some hidden line containing NO to field
+        (setq str (buffer-substring-no-properties (point-min) (point-max))))
+      ;; take name from TO field - match series of names
+      (when (string-match "^To: \"?\\(.+\\)" str)
+        (setq email-string (match-string 1 str)))
+      ;;split to list by comma
+      (setq email-list (split-string email-string " *, *"))
+      ;;loop over emails
+      (dolist (tmpstr email-list)
+        ;;get first word of email string
+        (setq tmpname (car (split-string tmpstr " ")))
+        ;;remove whitespace or ""
+        (setq tmpname (replace-regexp-in-string "[ \"]" "" tmpname))
+        ;;join to string
+        (setq email-name
+              (concat email-name ", " tmpname)))
+      ;;remove initial comma
+      (setq email-name (replace-regexp-in-string "^, " "" email-name))
+      ;;see if we want to use the name in the FROM field
+      ;;get name in FROM field if available, but only if there is only
+      ;;one name in TO field
+      (if (< (length email-list) 2)
+          (when (string-match "^\\([^ ,\n]+\\).+writes:$" str)
+            (progn (setq email-name2 (match-string 1 str))
+                   ;;prefer name in FROM field if TO field has "@"
+                   (when (string-match "@" email-name)
+                     (setq email-name email-name2))
+                   )))
+      email-name))
+  ;; define function to display ansi colours for a buffer
+  ;; http://stackoverflow.com/questions/23378271/how-do-i-display-ansi-color-codes-in-emacs-for-any-mode
+  (require 'ansi-color)
+  (defun display-ansi-colors ()
+    (interactive)
+    (ansi-color-apply-on-region (point-min) (point-max)))
+  ;; http://pragmaticemacs.com/emacs/how-i-view-my-google-calendar-agenda-in-emacs/
+  (defun ii/open-gcal-agenda ()
+    "Open my google calendar agenda file. The agenda is displayed in the buffer *gcal*."
+    (interactive)
+    ;; set name of calendar buffer and location of file containing my agenda
+    (let ((tmp-buff-name "*gcal*") (cal-file (expand-file-name "/homeb/bjm/gcal")))
+      ;; switch to calendar buffer
+      (switch-to-buffer tmp-buff-name)
+      ;; turn off read only to overwrite if buffer exists
+      (read-only-mode -1)
+      ;; clear buffer
+      (erase-buffer)
+      ;; insert agenda file
+      (shell-command "gcalcli agenda" (current-buffer))
+      ;; (insert (shell-command "gcalcli agenda"))
+      ;; turn on colours
+      (display-ansi-colors)
+      ;; turn on special mode
+      (special-mode)
+      ;; turn off line wrapping
+      (visual-line-mode -1)))
   (defun togetherly-client-quick-start (the-port)
     (interactive)
     (let* ((host "127.0.0.1")
@@ -639,10 +771,53 @@ before packages are loaded."
   ;;(global-set-key (kbd "C-a") 'beginning-of-line)
   ;;(global-set-key (kbd "C-y") 'yank)
   ;;(global-set-key (kbd "C-p") 'previous-line)
+                                        ; smtp
+  (setq message-send-mail-function 'smtpmail-send-it
+        smtpmail-starttls-credentials
+        '(("smtp.gmail.com" 587 nil nil))
+        smtpmail-default-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587
+        smtpmail-debug-info t)
+  (setq mu4e-reply-to-address "hh@ii.coop"
+        user-mail-address "hh@ii.coop"
+        user-full-name  "Hippie Hacker")
+  (add-hook 'mu4e-compose-mode-hook
+            (defun my-do-compose-stuff ()
+              "My settings for message composition."
+              (set-fill-column 72)
+              (flyspell-mode)))
   ;; activate debugging
+  (setq
+   mu4e-maildir (expand-file-name "~/Maildir")
+   ;; Use for testing
+   ;; mu4e-get-mail-command "true"
+   mu4e-get-mail-command "mbsync gmail"
+   mu4e-change-filenames-when-moving t
+   smtpmail-queue-mail nil
+   smtpmail-queue-dir "~/Maildir/queue/cur"
+   )
   (setq debug-on-error nil
         debug-on-signal nil
         debug-on-quit nil)
+  (add-hook 'go-mode-hook #'lsp)
+  (add-hook 'python-mode-hook #'lsp)
+  ;; info:org#Conflicts for org 9 and very recent yas
+  (defun yas/org-very-safe-expand ()
+    (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (make-variable-buffer-local 'yas/trigger-key)
+              (setq yas/trigger-key [tab])
+              (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+              (define-key yas/keymap [tab] 'yas/next-field)))
+  ;; (add-hook 'message-mode-hook
+  ;;           (lambda ()
+  ;;             (make-variable-buffer-local 'yas/trigger-key)
+  ;;             (setq yas/trigger-key [tab])
+  ;;             (setq message-tab-body-function nil)
+  ;;             ;; (setq message-tab-body-function 'yas/org-very-safe-expand)
+  ;;             (define-key yas/keymap [tab] 'yas/next-field)))
   (defun ssh-find-agent ()
     (interactive)
     (setenv "SSH_AUTH_SOCK" (shell-command-to-string "\
@@ -733,7 +908,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (zeal-at-point xkcd helm-dash dash-docs emojify emoji-cheat-sheet-plus copy-as-format company-emoji pdf-tools org-babel-eval-in-repl ess matlab-mode eval-in-repl julia-mode gorepl-mode go-playground gotest graphql-mode zenburn-theme zen-and-art-theme yasnippet-snippets yapfify yaml-mode xclip ws-butler writeroom-mode winum white-sand-theme which-key websocket web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill underwater-theme ujelly-theme typo twilight-theme twilight-bright-theme twilight-anti-bright-theme treemacs-projectile treemacs-evil toxi-theme toml-mode togetherly toc-org tide tao-theme tangotango-theme tango-plus-theme tango-2-theme tagedit symon symbol-overlay sunny-day-theme sublime-themes subatomic256-theme subatomic-theme string-inflection spaceline-all-the-icons spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slime slim-mode seti-theme seeing-is-believing scss-mode scad-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe reverse-theme restart-emacs rebecca-theme rbenv rake rainbow-delimiters railscasts-theme racer pytest pyenv-mode py-isort purple-haze-theme pug-mode professional-theme prettier-js popwin planet-theme pippel pipenv pip-requirements phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode password-generator paradox pandoc-mode ox-twbs ox-pandoc ox-hugo ox-gfm overseer orgit organic-green-theme org-tree-slide org-re-reveal org-projectile org-present org-pomodoro org-mime org-journal org-download org-cliplink org-bullets org-brain open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme ob-tmux ob-go noctilux-theme nginx-mode naquadah-theme nameless mwim mustang-theme move-text monokai-theme monochrome-theme molokai-theme moe-theme mmm-mode minitest minimal-theme material-theme markdown-toc majapahit-theme magit-svn magit-gitflow madhat2r-theme lush-theme lorem-ipsum livid-mode live-py-mode link-hint light-soap-theme kaolin-themes json-navigator js2-refactor js-doc jbeans-theme jazz-theme ir-black-theme insert-shebang inkpot-theme indent-guide importmagic impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hc-zenburn-theme gruvbox-theme gruber-darker-theme groovy-mode grandshell-theme gotham-theme google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc go-dlv gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ ghub gh-md gandalf-theme fuzzy font-lock+ flycheck-rust flycheck-pos-tip flycheck-package flycheck-gometalinter flycheck-bashate flx-ido flatui-theme flatland-theme fish-mode fill-column-indicator feature-mode farmhouse-theme fancy-narrow fancy-battery eziam-theme eyebrowse expand-region exotica-theme evil-visualstar evil-visual-mark-mode evil-vimish-fold evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu espresso-theme emmet-mode elisp-slime-nav editorconfig dumb-jump dracula-theme dotenv-mode doom-themes doom-modeline dockerfile-mode docker django-theme diminish diff-hl demo-it define-word darktooth-theme darkokai-theme darkmine-theme darkburn-theme dakrone-theme cython-mode cyberpunk-theme counsel-projectile company-web company-terraform company-tern company-statistics company-shell company-quickhelp company-lua company-go company-anaconda command-log-mode column-enforce-mode color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme closql clean-aindent-mode chruby cherry-blossom-theme centered-cursor-mode cargo busybee-theme bundler bubbleberry-theme browse-at-remote blacken birds-of-paradise-plus-theme badwolf-theme auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes aggressive-indent afternoon-theme ace-link ace-jump-helm-line ac-ispell)))
+    (lsp-ui lsp-treemacs helm-lsp company-lsp lsp-mode emms transcribe emacs-reveal oer-reveal ox-reveal deft mu4e-maildirs-extension mu4e-alert helm-mu zeal-at-point xkcd helm-dash dash-docs emojify emoji-cheat-sheet-plus copy-as-format company-emoji pdf-tools org-babel-eval-in-repl ess matlab-mode eval-in-repl julia-mode gorepl-mode go-playground gotest graphql-mode zenburn-theme zen-and-art-theme yasnippet-snippets yapfify yaml-mode xclip ws-butler writeroom-mode winum white-sand-theme which-key websocket web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill underwater-theme ujelly-theme typo twilight-theme twilight-bright-theme twilight-anti-bright-theme treemacs-projectile treemacs-evil toxi-theme toml-mode togetherly toc-org tide tao-theme tangotango-theme tango-plus-theme tango-2-theme tagedit symon symbol-overlay sunny-day-theme sublime-themes subatomic256-theme subatomic-theme string-inflection spaceline-all-the-icons spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slime slim-mode seti-theme seeing-is-believing scss-mode scad-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe reverse-theme restart-emacs rebecca-theme rbenv rake rainbow-delimiters railscasts-theme racer pytest pyenv-mode py-isort purple-haze-theme pug-mode professional-theme prettier-js popwin planet-theme pippel pipenv pip-requirements phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode password-generator paradox pandoc-mode ox-twbs ox-pandoc ox-hugo ox-gfm overseer orgit organic-green-theme org-tree-slide org-re-reveal org-projectile org-present org-pomodoro org-mime org-journal org-download org-cliplink org-bullets org-brain open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme ob-tmux ob-go noctilux-theme nginx-mode naquadah-theme nameless mwim mustang-theme move-text monokai-theme monochrome-theme molokai-theme moe-theme mmm-mode minitest minimal-theme material-theme markdown-toc majapahit-theme magit-svn magit-gitflow madhat2r-theme lush-theme lorem-ipsum livid-mode live-py-mode link-hint light-soap-theme kaolin-themes json-navigator js2-refactor js-doc jbeans-theme jazz-theme ir-black-theme insert-shebang inkpot-theme indent-guide importmagic impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hc-zenburn-theme gruvbox-theme gruber-darker-theme groovy-mode grandshell-theme gotham-theme google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc go-dlv gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ ghub gh-md gandalf-theme fuzzy font-lock+ flycheck-rust flycheck-pos-tip flycheck-package flycheck-gometalinter flycheck-bashate flx-ido flatui-theme flatland-theme fish-mode fill-column-indicator feature-mode farmhouse-theme fancy-narrow fancy-battery eziam-theme eyebrowse expand-region exotica-theme evil-visualstar evil-visual-mark-mode evil-vimish-fold evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu espresso-theme emmet-mode elisp-slime-nav editorconfig dumb-jump dracula-theme dotenv-mode doom-themes doom-modeline dockerfile-mode docker django-theme diminish diff-hl demo-it define-word darktooth-theme darkokai-theme darkmine-theme darkburn-theme dakrone-theme cython-mode cyberpunk-theme counsel-projectile company-web company-terraform company-tern company-statistics company-shell company-quickhelp company-lua company-go company-anaconda command-log-mode column-enforce-mode color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme closql clean-aindent-mode chruby cherry-blossom-theme centered-cursor-mode cargo busybee-theme bundler bubbleberry-theme browse-at-remote blacken birds-of-paradise-plus-theme badwolf-theme auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes aggressive-indent afternoon-theme ace-link ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
     ((nextcloud-passwd . set-password-dynamically)

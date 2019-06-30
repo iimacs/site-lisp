@@ -180,6 +180,9 @@
       ;;;;(load (concat elpa-path "dash-20190424.1804/dash.el"))
       ;;;;(load (concat elpa-path "togetherly-20170426.616/togetherly.el"))
       ;; (add-to-list 'load-path (concat elpa-path "org-plus-contrib-2019050"))
+      (add-to-list 'load-path (concat site-lisp "mu4e"))
+      (require 'ein)
+      (require 'ob-ein)
       (require 'togetherly)
       ;; These are shipped as part of ii-site-local and are only one file
       ;; I moved these into our modification of the org layer
@@ -187,18 +190,20 @@
       (load (concat site-lisp "ob-async/ob-async.el"))
       (load (concat site-lisp "osc52e/osc52e.el"))
       (load (concat site-lisp "impatient-mode/impatient-mode.el"))
+      (load (concat site-lisp "mu4e/mu4e.el"))
       ;; (add-to-list 'load-path (concat site-lisp "org-pdfview/"))
       ;; (load (concat site-lisp "org-pdfview/org-pdfview.el"))
       (add-to-list 'yas-snippet-dirs (concat site-lisp "snippets"))
       )
     ;; https://emacs.stackexchange.com/questions/20577/org-babel-load-all-languages-on-demand#20618
-    (defadvice org-babel-execute-src-block (around load-language nil activate)
-      "Load language if needed"
-      (let ((language (org-element-property :language (org-element-at-point))))
-        (unless (cdr (assoc (intern language) org-babel-load-languages))
-          (add-to-list 'org-babel-load-languages (cons (intern language) t))
-          (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))
-        ad-do-it))
+    ;; We should replace this with advice-add / advice-remove
+    ;; (defadvice org-babel-execute-src-block (around load-language nil activate)
+    ;;   "Load language if needed"
+    ;;   (let ((language (org-element-property :language (org-element-at-point))))
+    ;;     (unless (cdr (assoc (intern language) org-babel-load-languages))
+    ;;       (add-to-list 'org-babel-load-languages (cons (intern language) t))
+    ;;       (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))
+    ;;     ad-do-it))
     (yas--load-snippet-dirs)
     (spacemacs-buffer/display-startup-note)
     (spacemacs/setup-startup-hook)

@@ -21,9 +21,16 @@ Alternatively you can download a tarball here: LINK
   sudo git clone --depth 1 --recurse-submodules \
       https://github.com/iimacs/site-lisp \
       /usr/local/share/emacs/site-lisp
-  sudo emacs --batch -l /usr/local/share/emacs/site-lisp
+  sudo emacs --batch -l /usr/local/share/emacs/site-lisp/default.el
 #+END_SRC
 
+#+RESULTS:
+
+* Updates
+#+BEGIN_SRC shell
+  cd /usr/local/share/emacs/site-lisp
+  sudo git submodule update --recursive
+#+END_SRC
 
 
 * References
