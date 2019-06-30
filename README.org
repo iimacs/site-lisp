@@ -27,9 +27,12 @@ Alternatively you can download a tarball here: LINK
 #+RESULTS:
 
 * Updates
+
 #+BEGIN_SRC shell
   cd /usr/local/share/emacs/site-lisp
+  sudo git pull origin master
   sudo git submodule update --recursive
+  sudo emacs --batch -l /usr/local/share/emacs/site-lisp/default.el
 #+END_SRC
 
 
