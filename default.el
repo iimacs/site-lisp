@@ -231,6 +231,7 @@
         (message "Starting a server...")
         (server-start)
         (require 'org-protocol)
+        (require 'org-protocol-capture-html)
         ))
     (spacemacs|when-dumping-strict
       (setq load-path-backup load-path)
