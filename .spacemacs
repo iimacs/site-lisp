@@ -33,7 +33,8 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(clojure
+   '(sql
+     clojure
      rust
      typescript
      ;; ----------------------------------------------------------------
@@ -166,6 +167,7 @@ This function should only modify configuration layer settings."
                                       (ob-async :location "/usr/local/share/emacs/site-lisp/ob-async")
                                       (impatient-mode :location "/usr/local/share/emacs/site-lisp/impatient-mode")
                                       ;; https://gitlab.com/oer/oer-reveal
+                                      ob-sql-mode
                                       oer-reveal
                                       (org-protocol-capture-html :location (recipe
                                                                             :fetcher github
@@ -823,6 +825,8 @@ before packages are loaded."
   ;;             (setq message-tab-body-function nil)
   ;;             ;; (setq message-tab-body-function 'yas/org-very-safe-expand)
   ;;             (define-key yas/keymap [tab] 'yas/next-field)))
+  ;; We need this for gocode etc
+  (setenv "PATH" (concat user-home-directory "go/bin:" (getenv "PATH")))
   (defun ssh-find-agent ()
     (interactive)
     (setenv "SSH_AUTH_SOCK" (shell-command-to-string "\
@@ -856,7 +860,7 @@ before packages are loaded."
   ;; (require 'togetherly)
   ;; (spacemacs/set-leader-keys "SPC" 'avy-goto-word-or-subword-1)
   (spacemacs/declare-prefix "o" "o-prefix")
-  (spacemacs/set-leader-keys "ob" 'org-iswitchb)
+  (spacemacs/set-leader-keys "ob" 'org-switchb)
   (spacemacs/set-leader-keys "o#" 'org-agenda-list-stuck-projects)
   (spacemacs/set-leader-keys "o/" 'org-occur-in-agenda-files)
   (spacemacs/set-leader-keys "oa" 'org-agenda-list)
