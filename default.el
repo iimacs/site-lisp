@@ -184,6 +184,7 @@
       (require 'ein)
       (require 'ob-ein)
       (require 'togetherly)
+      (require 'ob-sql-mode)
       ;; These are shipped as part of ii-site-local and are only one file
       ;; I moved these into our modification of the org layer
       (load (concat site-lisp "ob-tmate/ob-tmate.el"))
